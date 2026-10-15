@@ -334,7 +334,7 @@
           button.href = apk.browser_download_url;
           enable('Télécharger pour Android');
           var date = new Date(release.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-          info.textContent = 'Version ' + release.tag_name.replace(/^v/, '') + ' · publiée le ' + date;
+          info.textContent = 'Version ' + release.tag_name.replace(/^v/i, '') + ' · publiée le ' + date;
           size.textContent = Math.round(apk.size / 1048576) + ' Mo';
         })
         .catch(function () {
