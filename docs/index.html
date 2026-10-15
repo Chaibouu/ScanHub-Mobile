@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ScanHub Mobile</title>
+  <meta name="description" content="Téléchargez l'application Android ScanHub : contrôle d'accès par QR code, même sans connexion." />
+  <meta name="theme-color" content="#2F2B6E" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #2F2B6E;
+      --brand-pressed: #24205A;
+      --brand-soft: #ECEBF6;
+      --accent: #FF7B47;
+      --accent-strong: #E4572E;
+      --accent-pressed: #C94822;
+      --on-brand-muted: #C9C7EA;
+      --bg: #F4F5FA;
+      --surface: #FFFFFF;
+      --ink: #0F172A;
+      --text: #334155;
+      --muted: #64748B;
+      --border: #E2E8F0;
+      --success: #15803D;
+      --success-soft: #DCFCE7;
+      --shadow: 0 10px 30px rgba(47, 43, 110, 0.10);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #12112A;
+        --surface: #1C1B3A;
+        --ink: #F1F1FA;
+        --text: #CFCFE6;
+        --muted: #9A9AC0;
+        --border: #2E2D55;
+        --brand-soft: #2A2858;
+        --success-soft: #133524;
+        --success: #4ADE80;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #12112A;
+      --surface: #1C1B3A;
+      --ink: #F1F1FA;
+      --text: #CFCFE6;
+      --muted: #9A9AC0;
+      --border: #2E2D55;
+      --brand-soft: #2A2858;
+      --success-soft: #133524;
+      --success: #4ADE80;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .wrap { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+    /* ── Bandeau, comme dans l'application ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 0 0 40px 40px;
+      padding: 56px 0 120px;
+      text-align: center;
+    }
+    .hero::before, .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero::before { width: 320px; height: 320px; top: -140px; right: -90px; background: rgba(255, 255, 255, 0.06); }
+    .hero::after { width: 110px; height: 110px; bottom: 40px; left: -30px; background: rgba(255, 123, 71, 0.18); }
+    .corner {
+      position: absolute;
+      width: 72px; height: 72px;
+      border-color: rgba(255, 255, 255, 0.16);
+      border-style: solid;
+      border-width: 0;
+    }
+    .corner.tl { top: 40px; left: 8%; border-top-width: 7px; border-left-width: 7px; border-top-left-radius: 18px; }
+    .corner.br { bottom: 72px; right: 8%; border-bottom-width: 7px; border-right-width: 7px; border-bottom-right-radius: 18px; }
+
+    .logo {
+      display: inline-block;
+      padding: 5px;
+      border-radius: 34px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+    .logo img { display: block; width: 104px; height: 104px; border-radius: 30px; }
+    .hero h1 { margin: 22px 0 4px; font-size: clamp(32px, 6vw, 44px); font-weight: 800; letter-spacing: -0.5px; }
+    .hero .tagline { margin: 0 auto; max-width: 520px; color: var(--on-brand-muted); font-size: 18px; }
+
+    .actions { margin-top: 32px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .download {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 64px;
+      padding: 8px 28px 8px 8px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 10px 26px rgba(228, 87, 46, 0.4);
+      transition: background 0.15s, transform 0.15s;
+    }
+    .download:hover { background: var(--accent-pressed); transform: translateY(-1px); }
+    .download:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .download .icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      display: grid; place-items: center;
+      color: var(--accent-strong);
+    }
+    .download[aria-disabled="true"] {
+      background: rgba(255, 255, 255, 0.14);
+      box-shadow: none;
+      pointer-events: none;
+    }
+    .download[aria-disabled="true"] .icon { color: var(--brand); }
+    .release-info { color: var(--on-brand-muted); font-size: 14px; min-height: 22px; }
+
+    /* ── Carte à cheval sur le bandeau ── */
+    main { margin-top: -80px; position: relative; padding-bottom: 48px; }
+    .card {
+      background: var(--surface);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; padding: 20px 8px; }
+    .summary div + div { border-left: 1px solid var(--border); }
+    .summary strong { display: block; font-size: 22px; font-weight: 800; color: var(--ink); }
+    .summary span { font-size: 13px; color: var(--muted); }
+
+    h2 { margin: 40px 0 16px; font-size: 22px; font-weight: 800; color: var(--ink); }
+
+    .steps { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; counter-reset: step; }
+    .step {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .step-num {
+      flex: none;
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      background: var(--brand);
+      color: #fff;
+      display: grid; place-items: center;
+      font-weight: 800;
+    }
+    .step h3 { margin: 2px 0 2px; font-size: 16px; color: var(--ink); }
+    .step p { margin: 0; font-size: 15px; }
+
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .feature { background: var(--surface); border-radius: 20px; padding: 18px; box-shadow: var(--shadow); }
+    .feature .tile {
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      display: grid; place-items: center;
+      margin-bottom: 12px;
+    }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .feature .tile { color: #C9C7EA; } }
+    :root[data-theme="dark"] .feature .tile { color: #C9C7EA; }
+    .feature h3 { margin: 0 0 4px; font-size: 16px; color: var(--ink); }
+    .feature p { margin: 0; font-size: 14px; color: var(--muted); }
+
+    .phone-qr { display: none; align-items: center; gap: 20px; margin-top: 12px; }
+    .phone-qr canvas, .phone-qr img { background: #fff; padding: 8px; border-radius: 12px; }
+    .phone-qr p { margin: 0; font-size: 15px; }
+    @media (min-width: 720px) { .phone-qr.ready { display: flex; } }
+
+    .note {
+      display: flex; gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--brand-soft);
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    footer { padding: 24px 0 40px; text-align: center; font-size: 14px; color: var(--muted); }
+    footer a { color: var(--muted); }
+
+    @media (max-width: 520px) {
+      .hero { padding: 40px 0 110px; border-radius: 0 0 32px 32px; }
+      .corner { display: none; }
+      .download { font-size: 17px; }
+      .summary strong { font-size: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .download { transition: none; } }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <span class="corner tl" aria-hidden="true"></span>
+    <span class="corner br" aria-hidden="true"></span>
+    <div class="wrap">
+      <div class="logo"><img src="logo.png" alt="Logo ScanHub" width="104" height="104" /></div>
+      <h1>ScanHub</h1>
+      <p class="tagline">L'application des agents de contrôle : scannez les billets et les badges à l'entrée, même sans connexion.</p>
+
+      <div class="actions">
+        <a id="download" class="download" href="https://github.com/Chaibouu/ScanHub-Mobile/releases/latest/download/ScanHub.apk" aria-disabled="true">
+          <span class="icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="m6 11 6 6 6-6"/><path d="M5 20h14"/></svg>
+          </span>
+          <span id="download-label">Recherche de la dernière version…</span>
+        </a>
+        <div id="release-info" class="release-info" aria-live="polite"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card summary" aria-label="En bref">
+      <div><strong>Android</strong><span>7.0 ou plus récent</span></div>
+      <div><strong>Gratuit</strong><span>pour les agents</span></div>
+      <div><strong id="size">—</strong><span>taille de l'APK</span></div>
+    </section>
+
+    <div class="card phone-qr" id="phone-qr">
+      <div id="qr" aria-hidden="true"></div>
+      <p><strong>Sur ordinateur ?</strong> Scannez ce code avec le téléphone de l'agent pour ouvrir cette page et y télécharger l'application.</p>
+    </div>
+
+    <h2>Installer l'application</h2>
+    <ol class="steps">
+      <li class="step">
+        <span class="step-num">1</span>
+        <div>
+          <h3>Télécharger l'APK</h3>
+          <p>Depuis le téléphone, appuyez sur le bouton orange ci-dessus.</p>
+        </div>
+      </li>
+      <li class="step">
+        <span class="step-num">2</span>
+        <div>
+          <h3>Autoriser l'installation</h3>
+          <p>Ouvrez le fichier téléchargé. Android demande d'autoriser l'installation depuis votre navigateur : acceptez pour cette fois.</p>
+        </div>
+      </li>
+      <li class="step">
+        <span class="step-num">3</span>
+        <div>
+          <h3>Activer le téléphone</h3>
+          <p>Saisissez le code d'activation donné par votre administrateur (tableau de bord, rubrique « Terminaux mobiles »), puis connectez-vous avec votre compte agent.</p>
+        </div>
+      </li>
+    </ol>
+    <div class="note">
+      <span aria-hidden="true">ℹ️</span>
+      <span>L'application n'est pas encore sur le Play Store : c'est pourquoi Android affiche un avertissement. Téléchargez-la uniquement depuis cette page.</span>
+    </div>
+
+    <h2>Ce que fait l'application</h2>
+    <div class="features">
+      <article class="feature">
+        <div class="tile" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+        <h3>Scan instantané</h3>
+        <p>Le passage est vérifié et enregistré dès que le QR code est lu, avec un verdict en plein écran : vert, orange ou rouge.</p>
+      </article>
+      <article class="feature">
+        <div class="tile" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.5a10 10 0 0 1 5-2.8M19 12.5a10 10 0 0 0-2.2-1.6"/><path d="M12 20h.01"/></svg></div>
+        <h3>Même sans réseau</h3>
+        <p>La liste des billets est gardée sur le téléphone. Les entrées sont envoyées au serveur dès que la connexion revient.</p>
+      </article>
+      <article class="feature">
+        <div class="tile" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-3 7.4-7 9-4-1.6-7-4.8-7-9V6l7-3z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <h3>Une seule entrée par billet</h3>
+        <p>Un billet ne passe qu'une fois, même scanné au même moment à deux portes différentes.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="wrap">
+    ScanHub — contrôle d'accès par QR code ·
+    <a href="https://github.com/Chaibouu/ScanHub-Mobile/releases">Toutes les versions</a> ·
+    <a href="https://scan-hub.vercel.app">Tableau de bord</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script>
+    (function () {
+      var REPO = 'Chaibouu/ScanHub-Mobile';
+      var ASSET = 'ScanHub.apk';
+      var button = document.getElementById('download');
+      var label = document.getElementById('download-label');
+      var info = document.getElementById('release-info');
+      var size = document.getElementById('size');
+
+      function enable(text) {
+        button.removeAttribute('aria-disabled');
+        label.textContent = text;
+      }
+
+      // Dernière version publiée sur GitHub (Releases) : le bouton n'est actif que si l'APK existe
+      fetch('https://api.github.com/repos/' + REPO + '/releases/latest', {
+        headers: { Accept: 'application/vnd.github+json' }
+      })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (release) {
+          var apk = release && (release.assets || []).find(function (a) { return a.name === ASSET; });
+          if (!apk) {
+            label.textContent = 'APK bientôt disponible';
+            info.textContent = 'La première version est en préparation.';
+            return;
+          }
+          button.href = apk.browser_download_url;
+          enable('Télécharger pour Android');
+          var date = new Date(release.published_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+          info.textContent = 'Version ' + release.tag_name.replace(/^v/, '') + ' · publiée le ' + date;
+          size.textContent = Math.round(apk.size / 1048576) + ' Mo';
+        })
+        .catch(function () {
+          // API GitHub indisponible : le lien direct vers la dernière version reste valable
+          enable('Télécharger pour Android');
+        });
+
+      // QR code de cette page, pour l'ouvrir sur le téléphone depuis un ordinateur
+      try {
+        var qr = qrcode(0, 'M');
+        qr.addData(location.href.split('#')[0]);
+        qr.make();
+        document.getElementById('qr').innerHTML = qr.createImgTag(4, 0);
+        document.getElementById('phone-qr').classList.add('ready');
+      } catch (e) {
+        // Bibliothèque non chargée : la section reste masquée
+      }
+    })();
+  </script>
+</body>
+</html>
