@@ -25,8 +25,8 @@ Les profils sont dans `eas.json` :
 
 | Profil | Résultat | Serveur visé |
 |---|---|---|
-| `preview` | APK à installer directement | https://scan-hub.vercel.app |
-| `production` | Fichier pour le Play Store (.aab) | https://scan-hub.vercel.app |
+| `preview` | APK à installer directement | https://scan-hub-eight.vercel.app |
+| `production` | Fichier pour le Play Store (.aab) | https://scan-hub-eight.vercel.app |
 | `local` | APK de test | l'ordinateur de développement sur le Wi-Fi (http) |
 
 ```bash

@@ -10,7 +10,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://scan-hub.vercel.app/api/v1"
+        "EXPO_PUBLIC_API_URL": "https://scan-hub-eight.vercel.app/api/v1"
       }
     },
     "production": {
@@ -18,7 +18,7 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://scan-hub.vercel.app/api/v1"
+        "EXPO_PUBLIC_API_URL": "https://scan-hub-eight.vercel.app/api/v1"
       }
     },
     "local": {
